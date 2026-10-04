@@ -1,0 +1,6 @@
+{
+  "name": "ZEE TRENDS STORE",
+  "description": "Pakistan's premium online general store offering trending accessories, watches, wallets, beauty, skincare, kitchen, kids, and everyday useful products with nationwide Cash on Delivery.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
