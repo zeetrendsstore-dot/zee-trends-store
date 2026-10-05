@@ -531,7 +531,7 @@ async function startServer() {
       res.sendFile(path.resolve(distPath, 'index.html'));
     });
   }
-
+import ... from "./data/products.ts";
   app.listen(Number(PORT), '0.0.0.0', () => {
     console.log(`[Server] ZEE TRENDS STORE full-stack server running on http://0.0.0.0:${PORT}`);
   });
