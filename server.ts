@@ -18,6 +18,11 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json({ limit: '15mb' }));
 app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 
+// Static assets serving with proper MIME types for images
+app.use('/images', express.static(path.resolve(__dirname, 'public/images')));
+app.use('/src/assets/images', express.static(path.resolve(__dirname, 'public/images')));
+app.use(express.static(path.resolve(__dirname, 'public')));
+
 // --- SECURE SERVER-SIDE GEMINI CLIENT ---
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -523,6 +528,20 @@ async function startServer() {
       server: { middlewareMode: true },
       appType: 'spa',
     });
+
+    // Explicit handler for /admin and /admin/login routes in dev
+    app.get(['/admin', '/admin/*', '/admin/login'], async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const url = req.originalUrl;
+        const fs = await import('fs');
+        const template = await fs.promises.readFile(path.resolve(__dirname, 'index.html'), 'utf-8');
+        const html = await vite.transformIndexHtml(url, template);
+        res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
+      } catch (e) {
+        next(e);
+      }
+    });
+
     app.use(vite.middlewares);
   } else {
     const distPath = path.resolve(__dirname, 'dist');
@@ -531,7 +550,7 @@ async function startServer() {
       res.sendFile(path.resolve(distPath, 'index.html'));
     });
   }
-  
+
   app.listen(Number(PORT), '0.0.0.0', () => {
     console.log(`[Server] ZEE TRENDS STORE full-stack server running on http://0.0.0.0:${PORT}`);
   });
